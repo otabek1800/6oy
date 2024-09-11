@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+option go_package = "genproto/user";
+
+package user;
+
+service UserService {
+    rpc Register(RegisterReq) returns (RegisterRes);
+    rpc Login(LoginReq) returns (LoginRes);
+    rpc ConfirmationRegister(ConfirmationRegisterReq) returns (ConfirmationRegisterRes);
+    rpc GetUSerByEmail(GetUSerByEmailReq) returns (GetUserResponse);
+    rpc UpdatePassword (UpdatePasswordReq) returns (UpdatePasswordRes);
+    rpc ResetPassword (ResetPasswordReq) returns (ResetPasswordRes);
+    rpc ConfirmationPassword(ConfirmationReq) returns (ConfirmationResponse);
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserRespose);
+    rpc DeleteUser (UserId) returns (DeleteUserr);
+    rpc UpdateRole (UpdateRoleReq) returns (UpdateRoleRes);
+    rpc ProfileImage (ImageReq) returns (ImageRes);
+    rpc StoreRefreshToken(StoreRefreshTokenReq) returns (StoreRefReshTokenRes);
+}
+
+message UpdateRoleRes{
+    string message = 1;
+}
+
+message UpdateRoleReq{
+    string email = 1;
+    string role = 2;
+}
+
+message StoreRefReshTokenRes{
+    string message = 1;
+}
+
+message StoreRefreshTokenReq{
+    string user_id = 1;
+    string refresh = 2;
+}
+
+message ImageReq{
+    string image = 1;
+    string email = 2;
+}
+
+message ImageRes{
+    string message = 1;
+}
+
+message User{
+    string id = 1;
+    string email = 2;
+    string first_name = 3;
+    string last_name = 4;
+    string password = 5;
+    string role = 6;
+    string created_at = 7;
+    string updated_at = 8;
+}
+
+message ConfirmationRegisterReq {
+    string email = 1;
+    int64 code = 2;
+}
+
+
+message ConfirmationRegisterRes{
+    User user = 1;
+}
+
+message RegisterReq{
+    string email = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string password = 4;
+    string role = 5;
+    int64  code = 6;
+}
+
+message RegisterRes{
+    string message = 1;
+}
+
+message LoginReq{
+    string email = 1;
+    string password = 2;
+}
+
+message LoginRes{
+    string access = 1;
+    string refresh = 2;
+}
+
+message ConfirmationReq{
+    int64 code   = 1;
+    string email = 2;
+    string new_password = 3;
+}
+
+message ConfirmationRes{
+    User user = 1;
+}
+
+message GetUSerByEmailReq{
+    string email = 1;
+}
+
+message GetUserResponse{
+    User user = 1;
+}
+
+message UpdatePasswordReq{
+    string old_password = 1;
+    string new_password = 2;
+    string email        = 3;
+}
+
+message UpdatePasswordRes{
+    string message = 1;
+}
+
+message ResetPasswordReq{
+    string email = 1;
+}
+
+message ResetPasswordRes{
+    string message = 1;
+}
+
+message ConfirmationResponse{
+    string message = 1;
+}
+
+message UpdateUserRequest{
+    string id = 1;
+    string email = 2;
+    string first_name = 3;
+    string last_name = 4;
+}
+
+message UpdateUserRespose{
+    string message = 1;
+}
+
+message UserId{
+    string id = 1;
+}
+
+message DeleteUserr{
+    string message = 1;
+}
