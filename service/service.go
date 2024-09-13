@@ -7,17 +7,18 @@ import (
 	"google_docs_user/storage"
 	"google_docs_user/storage/postgres"
 	"google_docs_user/storage/redis"
-	"log/slog"
+
+	"github.com/sirupsen/logrus"
 )
 
 type UserService struct {
 	pb.UnimplementedUserServiceServer
 	User storage.IStorage
 
-	Logger *slog.Logger
+	Logger *logrus.Logger
 }
 
-func NewUserService(db *sql.DB, Logger *slog.Logger) *UserService {
+func NewUserService(db *sql.DB, Logger *logrus.Logger) *UserService {
 	return &UserService{
 		User:   postgres.NewPostgresStorage(db, Logger),
 		Logger: Logger,
@@ -98,7 +99,7 @@ func (s *UserService) DeleteUser(ctx context.Context, req *pb.UserId) (*pb.Delet
 	return res, nil
 }
 
-func (s *UserService) UpdateRole(ctx context.Context,req *pb.UpdateRoleReq)(*pb.UpdateRoleRes,error){
+func (s *UserService) UpdateRole(ctx context.Context, req *pb.UpdateRoleReq) (*pb.UpdateRoleRes, error) {
 	res, err := s.User.User().UpdateRole(ctx, req)
 	if err != nil {
 		s.Logger.Error("failed to UpdateRole user", "error", err)
@@ -107,7 +108,7 @@ func (s *UserService) UpdateRole(ctx context.Context,req *pb.UpdateRoleReq)(*pb.
 	return res, nil
 }
 
-func (s *UserService) ProfileImage(ctx context.Context,req *pb.ImageReq)(*pb.ImageRes,error){
+func (s *UserService) ProfileImage(ctx context.Context, req *pb.ImageReq) (*pb.ImageRes, error) {
 	res, err := s.User.User().ProfileImage(ctx, req)
 	if err != nil {
 		s.Logger.Error("failed to ProfileImage user", "error", err)

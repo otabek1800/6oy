@@ -5,24 +5,23 @@ import (
 	"errors"
 	"fmt"
 	pb "google_docs_user/genproto/user"
-	"google_docs_user/pkg/logger"
 	"google_docs_user/storage"
 	"google_docs_user/storage/redis"
-	"log/slog"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 )
 
 type UserRepository struct {
 	Db  *sql.DB
-	Log *slog.Logger
+	Log *logrus.Logger
 }
 
-func NewUserRepository(db *sql.DB) storage.IUserStorage {
-	return &UserRepository{Db: db, Log: logger.NewLogger()}
+func NewUserRepository(db *sql.DB, logger *logrus.Logger) storage.IUserStorage {
+	return &UserRepository{Db: db, Log: logger}
 }
 
 func (u *UserRepository) StoreRefreshToken(ctx context.Context, req *pb.StoreRefreshTokenReq) (*pb.StoreRefReshTokenRes, error) {
@@ -129,7 +128,7 @@ func (u *UserRepository) UpdatePassword(ctx context.Context, req *pb.UpdatePassw
 func (u *UserRepository) ConfirmationPassword(ctx context.Context, req *pb.ConfirmationReq) (*pb.ConfirmationResponse, error) {
 
 	query := `UPDATE users SET password = $1 WHERE email = $2 AND deleted_at = 0`
-	_,err := u.Db.ExecContext(ctx,query, req.NewPassword, req.Email)
+	_, err := u.Db.ExecContext(ctx, query, req.NewPassword, req.Email)
 	if err != nil {
 		u.Log.Error("No user found with email ", "email", req.Email)
 		return nil, errors.New("no user found")

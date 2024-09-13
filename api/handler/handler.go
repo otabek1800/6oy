@@ -3,21 +3,20 @@ package handler
 import (
 	"google_docs_user/config"
 	"google_docs_user/genproto/user"
-	"google_docs_user/pkg/logger"
 	"log"
-	"log/slog"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Handler struct {
 	User user.UserServiceClient
-	Log  *slog.Logger
+	Log  *logrus.Logger
 }
 
-func NewHandler() *Handler {
+func NewHandler(logger *logrus.Logger) *Handler {
 
 	conn, err := grpc.Dial(config.Load().USER_SERVICE, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -26,7 +25,7 @@ func NewHandler() *Handler {
 
 	return &Handler{
 		User: user.NewUserServiceClient(conn),
-		Log:  logger.NewLogger(),
+		Log:  logger,
 	}
 }
 
